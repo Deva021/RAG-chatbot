@@ -1,0 +1,195 @@
+{
+  "project": "AI Landing Page + RAG Website Chatbot",
+  "stack": {
+    "web": "Next.js (App Router) + TypeScript",
+    "db": "Hosted Supabase (Auth + Postgres + Storage) + pgvector",
+    "ai": "Transformers.js (Embeddings; optional small on-device generation)",
+    "rule": "No local Supabase. All DB changes must be committed as SQL migrations and applied to hosted Supabase via CI/CLI; do not create schema manually in the Supabase dashboard."
+  },
+  "batch": {
+    "number": 3,
+    "name": "Admin Knowledge Base: Upload, Client-Side Ingestion, Embeddings, CRUD (30 tasks)"
+  },
+  "tasks": [
+    {
+      "id": 61,
+      "title": "Add PDF upload component",
+      "goal": "Admin can select/drag-drop PDF",
+      "done_when": "PDF file selection works with validation"
+    },
+    {
+      "id": 62,
+      "title": "Validate file type/size",
+      "goal": "Block non-PDF and huge files",
+      "done_when": "Invalid files are rejected with message"
+    },
+    {
+      "id": 63,
+      "title": "Upload PDF to Supabase Storage",
+      "goal": "Store file privately with deterministic path",
+      "done_when": "PDF appears in bucket at correct path"
+    },
+    {
+      "id": 64,
+      "title": "Create kb_document row on upload",
+      "goal": "Insert doc metadata record in DB",
+      "done_when": "kb_documents row created with status=uploaded"
+    },
+    {
+      "id": 65,
+      "title": "Add client-side PDF text extractor",
+      "goal": "Extract page text in browser",
+      "done_when": "Text extracted for a sample PDF"
+    },
+    {
+      "id": 66,
+      "title": "Handle extraction failure gracefully",
+      "goal": "Mark status failed + show reason",
+      "done_when": "Failed PDFs show actionable error"
+    },
+    {
+      "id": 67,
+      "title": "Implement chunking function",
+      "goal": "Split text with overlap and stable indexing",
+      "done_when": "Chunks created with consistent indices"
+    },
+    {
+      "id": 68,
+      "title": "Attach chunk metadata",
+      "goal": "Include page numbers/sections when possible",
+      "done_when": "Chunks store metadata jsonb"
+    },
+    {
+      "id": 69,
+      "title": "Compute document checksum",
+      "goal": "Hash PDF contents for versioning",
+      "done_when": "checksum saved in kb_documents"
+    },
+    {
+      "id": 70,
+      "title": "Skip ingestion if unchanged",
+      "goal": "Avoid re-embedding identical doc",
+      "done_when": "Duplicate upload prompts reuse or versioning"
+    },
+    {
+      "id": 71,
+      "title": "Add Transformers.js embedding loader",
+      "goal": "Load embedding model in admin flow",
+      "done_when": "Model loads once and is cached"
+    },
+    {
+      "id": 72,
+      "title": "Embed chunks in batches",
+      "goal": "Batch chunk embeddings for performance",
+      "done_when": "Embeddings generated without freezing UI"
+    },
+    {
+      "id": 73,
+      "title": "Persist chunks to kb_chunks",
+      "goal": "Insert chunk rows with doc FK",
+      "done_when": "All chunks inserted successfully"
+    },
+    {
+      "id": 74,
+      "title": "Persist embeddings to kb_embeddings",
+      "goal": "Insert vector per chunk with dims/model",
+      "done_when": "All embeddings inserted successfully"
+    },
+    {
+      "id": 75,
+      "title": "Mark document status processed",
+      "goal": "Set doc status=processed/ready",
+      "done_when": "Doc shows ready status in UI"
+    },
+    {
+      "id": 76,
+      "title": "Add ingestion progress UI",
+      "goal": "Show steps: upload/extract/chunk/embed/save",
+      "done_when": "Admin sees real-time progress"
+    },
+    {
+      "id": 77,
+      "title": "Add cancel ingestion button",
+      "goal": "Allow admin to cancel long embeddings",
+      "done_when": "Cancel stops further processing cleanly"
+    },
+    {
+      "id": 78,
+      "title": "Create documents table UI",
+      "goal": "List docs with status and timestamps",
+      "done_when": "Admin sees all uploaded docs"
+    },
+    {
+      "id": 79,
+      "title": "Add document delete action",
+      "goal": "Delete doc and cascade chunks/embeddings",
+      "done_when": "Doc removal removes related rows safely"
+    },
+    {
+      "id": 80,
+      "title": "Add reprocess document action",
+      "goal": "Re-run extraction/chunk/embed",
+      "done_when": "Doc can be reprocessed after changes"
+    },
+    {
+      "id": 81,
+      "title": "Add disable document action",
+      "goal": "Disable doc from retrieval without deleting",
+      "done_when": "Disabled docs are excluded from searches"
+    },
+    {
+      "id": 82,
+      "title": "Add chunk viewer UI",
+      "goal": "Inspect chunks and metadata",
+      "done_when": "Admin can view chunk text and page info"
+    },
+    {
+      "id": 83,
+      "title": "Add chunk disable toggle",
+      "goal": "Disable specific chunks",
+      "done_when": "Disabled chunks are excluded from retrieval"
+    },
+    {
+      "id": 84,
+      "title": "Add text document ingestion",
+      "goal": "Allow admin to paste text and ingest",
+      "done_when": "Text docs are chunked/embedded/stored"
+    },
+    {
+      "id": 85,
+      "title": "Add URL/page content ingestion (optional)",
+      "goal": "Allow admin to paste URL and ingest content",
+      "done_when": "URL content is stored with source metadata"
+    },
+    {
+      "id": 86,
+      "title": "Add ingestion audit fields",
+      "goal": "Store model name, dims, run time",
+      "done_when": "Ingestion metadata is recorded per doc"
+    },
+    {
+      "id": 87,
+      "title": "Handle scanned PDFs limitation messaging",
+      "goal": "Detect low text density and warn",
+      "done_when": "Admin sees warning about scanned PDFs"
+    },
+    {
+      "id": 88,
+      "title": "Add safe retry strategy",
+      "goal": "Retry failed chunk inserts/embeds in small batches",
+      "done_when": "Transient failures can recover without restarting"
+    },
+    {
+      "id": 89,
+      "title": "Add admin-only KB search tool",
+      "goal": "Search chunks by keyword for debugging",
+      "done_when": "Admin can find chunks quickly"
+    },
+    {
+      "id": 90,
+      "title": "Admin UX polish pass",
+      "goal": "Improve table sorting/filtering and statuses",
+      "done_when": "Admin area feels stable and clean"
+    }
+  ]
+}
