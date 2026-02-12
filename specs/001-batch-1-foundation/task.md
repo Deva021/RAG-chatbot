@@ -1,0 +1,32 @@
+# Task: Batch 1 Foundation
+
+- [ ] 1. Create Next.js app skeleton
+- [ ] 2. Add pnpm + lock workflow
+- [ ] 3. Set up code quality tooling
+- [ ] 4. Create env var template
+- [ ] 5. Provision hosted Supabase project
+- [ ] 6. Enable pgvector extension (migration)
+- [ ] 7. Create profiles table (migration)
+- [ ] 8. Create roles enum (migration)
+- [ ] 9. Add RLS to profiles
+- [ ] 10. Create kb_documents table (migration)
+- [ ] 11. Create kb_chunks table (migration)
+- [ ] 12. Create kb_embeddings table (migration)
+- [ ] 13. Add vector index (migration)
+- [ ] 14. Add RLS to kb_documents
+- [ ] 15. Add RLS to kb_chunks
+- [ ] 16. Add RLS to kb_embeddings
+- [ ] 17. Define KB visibility rule
+- [ ] 18. Implement KB read policies
+- [ ] 19. Create chat_sessions table (migration)
+- [ ] 20. Create chat_messages table (migration)
+- [ ] 21. Add RLS to chat tables
+- [ ] 22. Create storage bucket (private)
+- [ ] 23. Add storage upload policy (admin-only)
+- [ ] 24. Add storage read policy (controlled)
+- [ ] 25. Add migrations workflow documentation
+- [ ] 26. Add decisions log
+- [ ] 27. Add minimal seed for admin role
+- [ ] 28. Set up Supabase client helpers
+- [ ] 29. Add error logging baseline
+- [ ] 30. Create smoke checklist doc
