@@ -1,0 +1,182 @@
+[
+    {
+      "id": 31,
+      "title": "Implement signup page",
+      "goal": "Email/password signup with Supabase Auth",
+      "done_when": "User can sign up successfully"
+    },
+    {
+      "id": 32,
+      "title": "Implement login page",
+      "goal": "Email/password login with Supabase Auth",
+      "done_when": "User can log in successfully"
+    },
+    {
+      "id": 33,
+      "title": "Implement logout action",
+      "goal": "Sign out and clear session",
+      "done_when": "User is logged out and redirected"
+    },
+    {
+      "id": 34,
+      "title": "Add auth session middleware/guards",
+      "goal": "Protect private routes server-side",
+      "done_when": "Unauthed users are redirected from protected pages"
+    },
+    {
+      "id": 35,
+      "title": "Create role guard utility",
+      "goal": "Reusable admin-role gate for pages/actions",
+      "done_when": "Admin-only page is protected correctly"
+    },
+    {
+      "id": 36,
+      "title": "Add landing page public/private toggle",
+      "goal": "Support public landing with gated chatbot",
+      "done_when": "Landing can be public while chat requires login"
+    },
+    {
+      "id": 37,
+      "title": "Build landing page layout",
+      "goal": "Hero, features, CTA sections",
+      "done_when": "Landing page renders responsive layout"
+    },
+    {
+      "id": 38,
+      "title": "Add navigation header",
+      "goal": "Header with login/logout + CTA",
+      "done_when": "Nav changes based on auth state"
+    },
+    {
+      "id": 39,
+      "title": "Add footer + legal links placeholders",
+      "goal": "Footer with placeholder policy links",
+      "done_when": "Footer present on landing pages"
+    },
+    {
+      "id": 40,
+      "title": "Create chatbot floating button",
+      "goal": "Floating widget launcher UI",
+      "done_when": "Button opens chat panel"
+    },
+    {
+      "id": 41,
+      "title": "Create chat panel layout",
+      "goal": "Chat window with header/body/input",
+      "done_when": "Panel looks clean on desktop/mobile"
+    },
+    {
+      "id": 42,
+      "title": "Implement message list rendering",
+      "goal": "User/assistant bubble UI",
+      "done_when": "Messages render with roles and timestamps"
+    },
+    {
+      "id": 43,
+      "title": "Add typing indicator UI",
+      "goal": "Show assistant typing state",
+      "done_when": "Indicator displays while streaming"
+    },
+    {
+      "id": 44,
+      "title": "Add streaming text UI handler",
+      "goal": "Append streamed tokens smoothly",
+      "done_when": "Assistant message grows during stream"
+    },
+    {
+      "id": 45,
+      "title": "Add citations UI component",
+      "goal": "Render sources under answers",
+      "done_when": "Sources show doc title + page/section"
+    },
+    {
+      "id": 46,
+      "title": "Add chat input UX",
+      "goal": "Enter to send, shift+enter newline",
+      "done_when": "Input behaves like standard chat"
+    },
+    {
+      "id": 47,
+      "title": "Add empty-state onboarding",
+      "goal": "Welcome message + example questions",
+      "done_when": "First-time user sees helpful prompts"
+    },
+    {
+      "id": 48,
+      "title": "Add auth gating for chatbot usage",
+      "goal": "Require login before sending messages",
+      "done_when": "Unauthed users cannot submit chat"
+    },
+    {
+      "id": 49,
+      "title": "Add toast/notification system",
+      "goal": "Global UI feedback for actions",
+      "done_when": "Errors/success show consistent toasts"
+    },
+    {
+      "id": 50,
+      "title": "Add loading states",
+      "goal": "Global spinners/skeletons",
+      "done_when": "No abrupt UI changes during async work"
+    },
+    {
+      "id": 51,
+      "title": "Create /admin route skeleton",
+      "goal": "Admin area layout with sidebar",
+      "done_when": "Admin route exists and loads for admins"
+    },
+    {
+      "id": 52,
+      "title": "Admin route role guard",
+      "goal": "Block non-admins from /admin",
+      "done_when": "Non-admin receives forbidden/redirect"
+    },
+    {
+      "id": 53,
+      "title": "Create /admin/documents page",
+      "goal": "Documents management screen shell",
+      "done_when": "Page renders with empty state"
+    },
+    {
+      "id": 54,
+      "title": "Add accessibility basics",
+      "goal": "Keyboard nav, ARIA labels for widget",
+      "done_when": "Tab/enter works on widget controls"
+    },
+    {
+      "id": 55,
+      "title": "Add responsive behavior",
+      "goal": "Mobile-friendly chat widget sizing",
+      "done_when": "Widget works on small screens"
+    },
+    {
+      "id": 56,
+      "title": "Add basic analytics hooks (optional)",
+      "goal": "Track opens/sends locally (no paid tools)",
+      "done_when": "Events can be logged/inspected"
+    },
+    {
+      "id": 57,
+      "title": "Add content sanitization for markdown",
+      "goal": "Prevent unsafe HTML injection",
+      "done_when": "Assistant output is rendered safely"
+    },
+    {
+      "id": 58,
+      "title": "Add rate-limit UI handling",
+      "goal": "Show friendly message when rate-limited",
+      "done_when": "User sees clear feedback on limits"
+    },
+    {
+      "id": 59,
+      "title": "Add app-level error boundary",
+      "goal": "Avoid blank screens on runtime errors",
+      "done_when": "Fallback UI shows on errors"
+    },
+    {
+      "id": 60,
+      "title": "UI polish pass",
+      "goal": "Spacing, typography, small refinements",
+      "done_when": "UI feels competition-ready"
+    }
+  ]
