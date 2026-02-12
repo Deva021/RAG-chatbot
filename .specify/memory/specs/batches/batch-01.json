@@ -1,0 +1,195 @@
+{
+  "project": "AI Landing Page + RAG Website Chatbot",
+  "stack": {
+    "web": "Next.js (App Router) + TypeScript",
+    "db": "Hosted Supabase (Auth + Postgres + Storage) + pgvector",
+    "ai": "Transformers.js (Embeddings; optional small on-device generation)",
+    "rule": "No local Supabase. All DB changes must be committed as SQL migrations and applied to hosted Supabase via CI/CLI; do not create schema manually in the Supabase dashboard."
+  },
+  "batch": {
+    "number": 1,
+    "name": "Foundation: Repo, Hosted Supabase, DB Schema, RLS, Storage (30 tasks)"
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Create Next.js app skeleton",
+      "goal": "Initialize Next.js App Router + TS project",
+      "done_when": "App runs locally with a home route"
+    },
+    {
+      "id": 2,
+      "title": "Add pnpm + lock workflow",
+      "goal": "Standardize package manager + scripts",
+      "done_when": "pnpm install/dev scripts work"
+    },
+    {
+      "id": 3,
+      "title": "Set up code quality tooling",
+      "goal": "Add ESLint + Prettier configs",
+      "done_when": "lint/format scripts pass"
+    },
+    {
+      "id": 4,
+      "title": "Create env var template",
+      "goal": "Add .env.example + docs for required keys",
+      "done_when": "Dev can configure env without guesswork"
+    },
+    {
+      "id": 5,
+      "title": "Provision hosted Supabase project",
+      "goal": "Create Supabase project for dev/staging",
+      "done_when": "Project URL + anon key available"
+    },
+    {
+      "id": 6,
+      "title": "Enable pgvector extension (migration)",
+      "goal": "Add SQL migration enabling pgvector",
+      "done_when": "pgvector extension is enabled in DB"
+    },
+    {
+      "id": 7,
+      "title": "Create profiles table (migration)",
+      "goal": "Add profiles table keyed by auth.users id",
+      "done_when": "profiles table exists with timestamps"
+    },
+    {
+      "id": 8,
+      "title": "Create roles enum (migration)",
+      "goal": "Define role enum for app authorization",
+      "done_when": "role enum exists and used by profiles"
+    },
+    {
+      "id": 9,
+      "title": "Add RLS to profiles",
+      "goal": "Enable RLS and policies for self-read/update",
+      "done_when": "Users only access their own profile row"
+    },
+    {
+      "id": 10,
+      "title": "Create kb_documents table (migration)",
+      "goal": "Create documents metadata table",
+      "done_when": "kb_documents exists with status fields"
+    },
+    {
+      "id": 11,
+      "title": "Create kb_chunks table (migration)",
+      "goal": "Create chunk storage table with metadata",
+      "done_when": "kb_chunks exists with doc FK + chunk_index"
+    },
+    {
+      "id": 12,
+      "title": "Create kb_embeddings table (migration)",
+      "goal": "Store vector embeddings per chunk",
+      "done_when": "kb_embeddings exists with vector column"
+    },
+    {
+      "id": 13,
+      "title": "Add vector index (migration)",
+      "goal": "Create pgvector index for similarity search",
+      "done_when": "Vector index exists and queryable"
+    },
+    {
+      "id": 14,
+      "title": "Add RLS to kb_documents",
+      "goal": "Restrict doc management to admins",
+      "done_when": "Non-admin cannot insert/update/delete docs"
+    },
+    {
+      "id": 15,
+      "title": "Add RLS to kb_chunks",
+      "goal": "Restrict chunk write to admins; read rules defined",
+      "done_when": "Policies enforce intended access"
+    },
+    {
+      "id": 16,
+      "title": "Add RLS to kb_embeddings",
+      "goal": "Restrict embedding writes to admins; read rules defined",
+      "done_when": "Policies enforce intended access"
+    },
+    {
+      "id": 17,
+      "title": "Define KB visibility rule",
+      "goal": "Decide: KB shared to all users vs per-admin docs only",
+      "done_when": "Policy decision recorded in docs/decisions.md"
+    },
+    {
+      "id": 18,
+      "title": "Implement KB read policies",
+      "goal": "Implement RLS read policies per chosen visibility rule",
+      "done_when": "Users only read allowed KB content"
+    },
+    {
+      "id": 19,
+      "title": "Create chat_sessions table (migration)",
+      "goal": "Optional chat session storage schema",
+      "done_when": "chat_sessions exists"
+    },
+    {
+      "id": 20,
+      "title": "Create chat_messages table (migration)",
+      "goal": "Optional message storage schema with citations json",
+      "done_when": "chat_messages exists"
+    },
+    {
+      "id": 21,
+      "title": "Add RLS to chat tables",
+      "goal": "Restrict chats to the owner user",
+      "done_when": "Users can only see their own chats"
+    },
+    {
+      "id": 22,
+      "title": "Create storage bucket (private)",
+      "goal": "Create private Supabase Storage bucket for PDFs",
+      "done_when": "Bucket exists and is private"
+    },
+    {
+      "id": 23,
+      "title": "Add storage upload policy (admin-only)",
+      "goal": "Allow only admins to upload PDFs",
+      "done_when": "Non-admin upload is denied"
+    },
+    {
+      "id": 24,
+      "title": "Add storage read policy (controlled)",
+      "goal": "Allow read via signed URLs or allowed users",
+      "done_when": "Docs cannot be publicly fetched"
+    },
+    {
+      "id": 25,
+      "title": "Add migrations workflow documentation",
+      "goal": "Document how to apply migrations to hosted Supabase",
+      "done_when": "README includes migration steps"
+    },
+    {
+      "id": 26,
+      "title": "Add decisions log",
+      "goal": "Create docs/decisions.md and record core decisions",
+      "done_when": "Decisions log exists and has initial entries"
+    },
+    {
+      "id": 27,
+      "title": "Add minimal seed for admin role",
+      "goal": "Document how to promote a user to admin safely",
+      "done_when": "Admin promotion steps are clear + repeatable"
+    },
+    {
+      "id": 28,
+      "title": "Set up Supabase client helpers",
+      "goal": "Create server/client supabase helpers for Next.js",
+      "done_when": "Helpers used by a sample route"
+    },
+    {
+      "id": 29,
+      "title": "Add error logging baseline",
+      "goal": "Centralize basic logging and error boundaries",
+      "done_when": "Errors are visible and not swallowed"
+    },
+    {
+      "id": 30,
+      "title": "Create smoke checklist doc",
+      "goal": "Define manual smoke checks for critical flows",
+      "done_when": "docs/smoke-checklist.md exists"
+    }
+  ]
+}

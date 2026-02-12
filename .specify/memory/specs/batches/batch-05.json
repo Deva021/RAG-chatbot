@@ -1,0 +1,195 @@
+{
+  "project": "AI Landing Page + RAG Website Chatbot",
+  "stack": {
+    "web": "Next.js (App Router) + TypeScript",
+    "db": "Hosted Supabase (Auth + Postgres + Storage) + pgvector",
+    "ai": "Transformers.js (Embeddings; optional small on-device generation)",
+    "rule": "No local Supabase. All DB changes must be committed as SQL migrations and applied to hosted Supabase via CI/CLI; do not create schema manually in the Supabase dashboard."
+  },
+  "batch": {
+    "number": 5,
+    "name": "Testing, QA, Deployment, Docs, Final Polish (30 tasks)"
+  },
+  "tasks": [
+    {
+      "id": 121,
+      "title": "Set up unit test runner",
+      "goal": "Add Vitest/Jest baseline",
+      "done_when": "Unit tests run in CI locally"
+    },
+    {
+      "id": 122,
+      "title": "Write chunking unit tests",
+      "goal": "Test chunk sizes, overlap, determinism",
+      "done_when": "Chunker tests pass for fixtures"
+    },
+    {
+      "id": 123,
+      "title": "Write citation formatting tests",
+      "goal": "Citations render expected fields",
+      "done_when": "Citations tests pass"
+    },
+    {
+      "id": 124,
+      "title": "Write evidence threshold tests",
+      "goal": "Refusal triggers correctly on weak retrieval",
+      "done_when": "Refusal logic tests pass"
+    },
+    {
+      "id": 125,
+      "title": "Mock embedding tests",
+      "goal": "Test embedding wrapper with mocked vectors",
+      "done_when": "Embedding wrapper tests pass without real model"
+    },
+    {
+      "id": 126,
+      "title": "Mock retrieval tests",
+      "goal": "Test retriever returns correct ordering",
+      "done_when": "Retriever tests pass with mock DB responses"
+    },
+    {
+      "id": 127,
+      "title": "Test /api/chat input validation",
+      "goal": "Validate message length, types, auth required",
+      "done_when": "Invalid inputs rejected with 4xx"
+    },
+    {
+      "id": 128,
+      "title": "Add component test setup",
+      "goal": "Add React Testing Library baseline",
+      "done_when": "Component tests run"
+    },
+    {
+      "id": 129,
+      "title": "Test chat widget states",
+      "goal": "Open/close, typing, streaming UI",
+      "done_when": "Widget component tests pass"
+    },
+    {
+      "id": 130,
+      "title": "Test admin upload UI states",
+      "goal": "Validation, progress steps UI",
+      "done_when": "Admin upload tests pass"
+    },
+    {
+      "id": 131,
+      "title": "Add mocked Supabase client layer",
+      "goal": "Central mock for Supabase calls in tests",
+      "done_when": "Tests do not require real Supabase"
+    },
+    {
+      "id": 132,
+      "title": "Add manual smoke test script",
+      "goal": "Step-by-step manual checks for hosted Supabase flows",
+      "done_when": "Smoke script is complete and usable"
+    },
+    {
+      "id": 133,
+      "title": "Create demo PDF fixtures",
+      "goal": "Prepare small PDFs for reliable demo/testing",
+      "done_when": "Demo PDFs committed in /fixtures or docs"
+    },
+    {
+      "id": 134,
+      "title": "Run end-to-end manual demo rehearsal",
+      "goal": "Practice full flow for competition",
+      "done_when": "Demo script executed without surprises"
+    },
+    {
+      "id": 135,
+      "title": "Add CI pipeline for lint/test",
+      "goal": "GitHub Actions runs lint + unit + component tests",
+      "done_when": "CI green on PRs"
+    },
+    {
+      "id": 136,
+      "title": "Add typecheck gate",
+      "goal": "CI runs tsc --noEmit",
+      "done_when": "Typecheck enforced in CI"
+    },
+    {
+      "id": 137,
+      "title": "Add security basics checks",
+      "goal": "Prevent leaking env vars and unsafe logs",
+      "done_when": "Simple checks documented/enforced"
+    },
+    {
+      "id": 138,
+      "title": "Add performance budget notes",
+      "goal": "Document Transformer model size expectations",
+      "done_when": "Docs include performance guidance"
+    },
+    {
+      "id": 139,
+      "title": "Implement model loading UX",
+      "goal": "Add model loading progress + fallback",
+      "done_when": "User sees clear loading status"
+    },
+    {
+      "id": 140,
+      "title": "Add low-power fallback mode",
+      "goal": "Default to extractive mode for weak devices",
+      "done_when": "Fallback triggers based on heuristics"
+    },
+    {
+      "id": 141,
+      "title": "Finalize RLS verification checklist",
+      "goal": "Manually verify RLS policies behave as intended",
+      "done_when": "Checklist completed and recorded"
+    },
+    {
+      "id": 142,
+      "title": "Document hosted Supabase setup",
+      "goal": "Add README section for Supabase project config",
+      "done_when": "New dev can set up hosted Supabase quickly"
+    },
+    {
+      "id": 143,
+      "title": "Document ingestion pipeline",
+      "goal": "Explain extract/chunk/embed/save steps",
+      "done_when": "docs/ingestion.md exists"
+    },
+    {
+      "id": 144,
+      "title": "Document retrieval + citations",
+      "goal": "Explain similarity search and source display",
+      "done_when": "docs/rag.md exists"
+    },
+    {
+      "id": 145,
+      "title": "Add deployment guide",
+      "goal": "Document Vercel deploy + env var setup",
+      "done_when": "docs/deploy.md exists"
+    },
+    {
+      "id": 146,
+      "title": "Add final UI polish",
+      "goal": "Refine spacing, icons, microinteractions",
+      "done_when": "UI feels premium for judges"
+    },
+    {
+      "id": 147,
+      "title": "Add demo script doc",
+      "goal": "Create a 3–5 minute demo script",
+      "done_when": "docs/demo-script.md exists"
+    },
+    {
+      "id": 148,
+      "title": "Add known limitations doc",
+      "goal": "List limitations (scanned PDFs, huge docs)",
+      "done_when": "docs/limitations.md exists"
+    },
+    {
+      "id": 149,
+      "title": "Run final regression checklist",
+      "goal": "Re-test core flows before submission",
+      "done_when": "Checklist completed with pass notes"
+    },
+    {
+      "id": 150,
+      "title": "Prepare release/hand-off notes",
+      "goal": "Summarize setup + how to demo + how to extend",
+      "done_when": "Release notes written and ready"
+    }
+  ]
+}

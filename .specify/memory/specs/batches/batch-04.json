@@ -1,0 +1,195 @@
+{
+  "project": "AI Landing Page + RAG Website Chatbot",
+  "stack": {
+    "web": "Next.js (App Router) + TypeScript",
+    "db": "Hosted Supabase (Auth + Postgres + Storage) + pgvector",
+    "ai": "Transformers.js (Embeddings; optional small on-device generation)",
+    "rule": "No local Supabase. All DB changes must be committed as SQL migrations and applied to hosted Supabase via CI/CLI; do not create schema manually in the Supabase dashboard."
+  },
+  "batch": {
+    "number": 4,
+    "name": "Chat Backend: Retrieval, Answering Options, Citations, Streaming, History (30 tasks)"
+  },
+  "tasks": [
+    {
+      "id": 91,
+      "title": "Create /api/chat route",
+      "goal": "Chat endpoint that accepts user message",
+      "done_when": "Endpoint responds with a placeholder message"
+    },
+    {
+      "id": 92,
+      "title": "Enforce auth on /api/chat",
+      "goal": "Only logged-in users can chat",
+      "done_when": "Unauthed calls are rejected"
+    },
+    {
+      "id": 93,
+      "title": "Create question embedding utility",
+      "goal": "Compute question embedding via Transformers.js",
+      "done_when": "Embedding vector returned for sample question"
+    },
+    {
+      "id": 94,
+      "title": "Choose embedding location (default)",
+      "goal": "Default to client-side embedding unless blocked",
+      "done_when": "Decision documented + implemented"
+    },
+    {
+      "id": 95,
+      "title": "Implement retrieval SQL query",
+      "goal": "Query pgvector for top-K chunks",
+      "done_when": "Top chunks returned for known question"
+    },
+    {
+      "id": 96,
+      "title": "Add retrieval filters",
+      "goal": "Exclude disabled docs/chunks",
+      "done_when": "Disabled content never appears in results"
+    },
+    {
+      "id": 97,
+      "title": "Add retrieval metadata shaping",
+      "goal": "Return doc title/page/section/url for citations",
+      "done_when": "Chat UI can display sources"
+    },
+    {
+      "id": 98,
+      "title": "Implement evidence check",
+      "goal": "Detect low similarity or empty retrieval",
+      "done_when": "System triggers 'not enough info' behavior"
+    },
+    {
+      "id": 99,
+      "title": "Implement refusal response template",
+      "goal": "Standard grounded refusal with next steps",
+      "done_when": "Bot refuses when evidence missing"
+    },
+    {
+      "id": 100,
+      "title": "Implement Option 2 answering (extractive)",
+      "goal": "Generate concise answer from retrieved chunks + citations",
+      "done_when": "Answers are fast and citation-backed"
+    },
+    {
+      "id": 101,
+      "title": "Add answer formatting rules",
+      "goal": "Short answer + sources block",
+      "done_when": "Output format is consistent"
+    },
+    {
+      "id": 102,
+      "title": "Add streaming response protocol",
+      "goal": "Stream tokens/segments to UI",
+      "done_when": "UI shows incremental assistant response"
+    },
+    {
+      "id": 103,
+      "title": "Wire chat widget to /api/chat",
+      "goal": "Send user messages and display responses",
+      "done_when": "Chat works end-to-end with retrieval"
+    },
+    {
+      "id": 104,
+      "title": "Add citations rendering",
+      "goal": "Render clickable citations per message",
+      "done_when": "Sources render under assistant answers"
+    },
+    {
+      "id": 105,
+      "title": "Add message ID + dedupe",
+      "goal": "Prevent double-sends on network retry",
+      "done_when": "Duplicate messages are not created"
+    },
+    {
+      "id": 106,
+      "title": "Add rate limit (basic)",
+      "goal": "Protect endpoint from spam",
+      "done_when": "Burst requests are limited with friendly error"
+    },
+    {
+      "id": 107,
+      "title": "Add prompt-style generation (optional)",
+      "goal": "Add Option 1 small-model generation via Transformers.js",
+      "done_when": "Optional mode generates fuller responses"
+    },
+    {
+      "id": 108,
+      "title": "Add generation mode toggle",
+      "goal": "Switch between extractive vs small-model",
+      "done_when": "Toggle exists (admin or env controlled)"
+    },
+    {
+      "id": 109,
+      "title": "Add safe markdown rendering rules",
+      "goal": "Avoid unsafe links/scripts in output",
+      "done_when": "Rendered content is sanitized"
+    },
+    {
+      "id": 110,
+      "title": "Create chat_sessions creation logic",
+      "goal": "Create session on first message",
+      "done_when": "Session row created for first chat"
+    },
+    {
+      "id": 111,
+      "title": "Store chat_messages rows",
+      "goal": "Persist user/assistant messages with citations",
+      "done_when": "Chat history stored for a session"
+    },
+    {
+      "id": 112,
+      "title": "Add chat history list UI",
+      "goal": "User can view past sessions",
+      "done_when": "Sessions list page works"
+    },
+    {
+      "id": 113,
+      "title": "Add resume conversation",
+      "goal": "Open session and continue chatting",
+      "done_when": "Messages load and new messages append"
+    },
+    {
+      "id": 114,
+      "title": "Add session title generation (simple)",
+      "goal": "Auto title sessions from first message",
+      "done_when": "Session has readable title"
+    },
+    {
+      "id": 115,
+      "title": "Add admin view of chat metrics (optional)",
+      "goal": "Top questions / unanswered counts",
+      "done_when": "Admin sees basic stats"
+    },
+    {
+      "id": 116,
+      "title": "Add caching of retrieval results (optional)",
+      "goal": "Cache question embeddings/retrieval for repeats",
+      "done_when": "Repeated questions respond faster"
+    },
+    {
+      "id": 117,
+      "title": "Add “show more sources” expansion",
+      "goal": "Allow user to view more retrieved chunks",
+      "done_when": "User can expand citations list"
+    },
+    {
+      "id": 118,
+      "title": "Add “copy answer” UX",
+      "goal": "Quick copy button for assistant answers",
+      "done_when": "Copy button works reliably"
+    },
+    {
+      "id": 119,
+      "title": "Add comprehensive error mapping",
+      "goal": "Map server errors to user-friendly messages",
+      "done_when": "Users see clear errors with next actions"
+    },
+    {
+      "id": 120,
+      "title": "Chat polish pass",
+      "goal": "Latency, transitions, and overall feel improvements",
+      "done_when": "Chat feels smooth and reliable"
+    }
+  ]
+}
