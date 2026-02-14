@@ -13,18 +13,11 @@ export interface PDFExtractResult {
   }
 }
 
-declare global {
-  interface Window {
-    pdfjsLib: any
-  }
-}
-
 /**
  * Extract text from a PDF File object.
  * Returns text per page and file metadata.
  * 
- * Note: This uses the GLOBAL window.pdfjsLib injected via layout.tsx
- * to bypass Turbopack/Next.js evaluation crashes.
+ * Uses dynamic import and legacy build for compatibility with Next.js evaluation.
  */
 export async function extractTextFromPDF(
   file: File,
@@ -32,29 +25,13 @@ export async function extractTextFromPDF(
 ): Promise<PDFExtractResult> {
   const arrayBuffer = await file.arrayBuffer()
   
-  // 1. Check for global library (Injected via next/script in AdminLayout)
-  // We use a small delay if needed to ensure the module is initialized
-  const getLib = async (retries = 10): Promise<any> => {
-    if (typeof window !== 'undefined' && (window as any).pdfjsLib) {
-      return (window as any).pdfjsLib
-    }
-    if (retries <= 0) return null
-    await new Promise(r => setTimeout(r, 200))
-    return getLib(retries - 1)
-  }
-
-  const pdfjsLib = await getLib()
-
-  if (!pdfjsLib) {
-    console.error('PDF Engine missing from global scope.')
-    throw new Error('Neural engine failed to initialize. Please refresh the page or check your connection.')
-  }
-
+  // Dynamic import of the legacy build for better Next.js compatibility
+  const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs')
+  
+  // Set worker locally
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/lib/pdfjs/pdf.worker.min.mjs'
+  
   try {
-    // 2. Configure worker from the same reliable CDN
-    const PDFJS_VERSION = '4.0.379'
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.mjs`
-
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
     const pdf = await loadingTask.promise
     const metadata = await pdf.getMetadata().catch(() => null)
@@ -77,13 +54,17 @@ export async function extractTextFromPDF(
       pages,
       pageCount: pdf.numPages,
       metadata: {
-        title: metadata?.info?.Title ?? undefined,
-        author: metadata?.info?.Author ?? undefined,
+        title: (metadata?.info as any)?.Title ?? undefined,
+        author: (metadata?.info as any)?.Author ?? undefined,
         fileSize: file.size,
       },
     }
   } catch (err) {
     console.error('Supreme PDF Engine failure:', err)
+    if (err instanceof Error) {
+        console.error('Stack:', err.stack)
+        console.error('Message:', err.message)
+    }
     throw new Error('Failed to process intelligence source. Check browser console for neural errors.')
   }
 }
