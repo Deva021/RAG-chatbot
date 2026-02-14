@@ -4,12 +4,16 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Trash2, RefreshCw, Loader2, FileText, Database, Layers, CheckCircle2, XCircle, MoreVertical } from 'lucide-react'
 import { runIngestionPipeline } from '@/lib/rag/ingestion-pipeline'
+import { useSearchParams } from 'next/navigation'
+import { Modal } from '@/components/ui/modal'
+import { AlertTriangle } from 'lucide-react'
 
 interface KBDocument {
   id: string
   name: string
   status: string
   enabled: boolean
+  storage_path?: string
   meta: Record<string, unknown>
   created_at: string
   chunk_count?: number
@@ -46,14 +50,24 @@ export default function DocumentTable({ refreshKey }: { refreshKey?: number }) {
   const [documents, setDocuments] = useState<KBDocument[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [deleteDocId, setDeleteDocId] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
   const supabase = createClient()
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q')?.toLowerCase() ?? ''
 
   const fetchDocuments = async () => {
     setLoading(true)
-    const { data, error } = await supabase
+    let request = supabase
       .from('kb_documents')
-      .select('id, name, status, enabled, meta, created_at')
+      .select('id, name, status, enabled, storage_path, meta, created_at')
       .order('created_at', { ascending: false })
+    
+    if (query) {
+      request = request.ilike('name', `%${query}%`)
+    }
+
+    const { data, error } = await request
 
     if (!error && data) {
       const docsWithCounts: KBDocument[] = await Promise.all(
@@ -73,21 +87,48 @@ export default function DocumentTable({ refreshKey }: { refreshKey?: number }) {
   useEffect(() => {
     fetchDocuments()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshKey])
+  }, [refreshKey, query])
 
-  const handleDelete = async (docId: string) => {
-    if (!confirm('Are you sure you want to permanently remove this document and its associated neural index?')) return
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const promptDelete = (docId: string) => {
+    setDeleteDocId(docId)
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteDocId) return
+    const docId = deleteDocId
+    setDeleteDocId(null)
     setActionLoading(docId)
     
-    const doc = documents.find(d => d.id === docId)
-    if (doc?.meta && typeof doc.meta === 'object' && 'storage_path' in doc.meta) {
-      await supabase.storage.from('artifacts').remove([(doc.meta as any).storage_path]).catch(() => {})
-    }
+    try {
+      const doc = documents.find(d => d.id === docId)
+      if (doc?.storage_path) {
+        const { error: storageError } = await supabase.storage
+          .from('artifacts')
+          .remove([doc.storage_path])
+        
+        if (storageError) {
+          console.warn('Storage removal warning:', storageError)
+        }
+      }
 
-    await supabase.from('kb_documents').delete().eq('id', docId)
-    
-    setActionLoading(null)
-    fetchDocuments()
+      const { error: deleteError } = await supabase.from('kb_documents').delete().eq('id', docId)
+      
+      if (deleteError) {
+        console.error('Delete failed:', deleteError)
+        alert(`Critical Failure: ${deleteError.message}`)
+      } else {
+        await fetchDocuments()
+      }
+    } catch (err) {
+      console.error('Unexpected error during deletion:', err)
+      alert('An unexpected neural collapse occurred during deletion.')
+    } finally {
+      setActionLoading(null)
+    }
   }
 
   const handleToggle = async (docId: string, currentEnabled: boolean) => {
@@ -147,8 +188,8 @@ export default function DocumentTable({ refreshKey }: { refreshKey?: number }) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border-separate border-spacing-y-4 px-4">
+    <div className="overflow-x-auto pb-4">
+      <table className="min-w-[1000px] w-full border-separate border-spacing-y-4 px-4">
         <thead>
           <tr>
             <th className="px-6 py-2 text-left text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Intelligence Source</th>
@@ -208,14 +249,14 @@ export default function DocumentTable({ refreshKey }: { refreshKey?: number }) {
                       <>
                         <button
                           onClick={() => handleReprocess(doc.id)}
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-400 transition-all hover:bg-indigo-600 hover:text-white hover:shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-indigo-500 transition-all hover:bg-indigo-600 hover:text-white hover:shadow-xl hover:shadow-indigo-200 dark:text-indigo-400 dark:hover:shadow-none"
                           title="Neural Refresh"
                         >
                           <RefreshCw className="h-5 w-5" />
                         </button>
                         <button
-                          onClick={() => handleDelete(doc.id)}
-                          className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-400 transition-all hover:bg-rose-600 hover:text-white hover:shadow-xl hover:shadow-rose-200 dark:hover:shadow-none"
+                          onClick={() => promptDelete(doc.id)}
+                          className="flex h-10 w-10 items-center justify-center rounded-xl text-rose-500 transition-all hover:bg-rose-600 hover:text-white hover:shadow-xl hover:shadow-rose-200 dark:text-rose-400 dark:hover:shadow-none"
                           title="Purge Intelligence"
                         >
                           <Trash2 className="h-5 w-5" />
@@ -229,6 +270,38 @@ export default function DocumentTable({ refreshKey }: { refreshKey?: number }) {
           })}
         </tbody>
       </table>
+      <Modal
+        isOpen={!!deleteDocId}
+        onClose={() => setDeleteDocId(null)}
+        title="Purge Intelligence Asset"
+      >
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 rounded-xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-500">
+            <AlertTriangle className="h-6 w-6 shrink-0" />
+            <p className="text-sm font-medium">This action cannot be undone.</p>
+          </div>
+          
+          <p className="text-neutral-400 text-sm leading-relaxed">
+            Are you sure you want to permanently delete this document? The associated vector embeddings and neural index will be irretrievably lost.
+          </p>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              onClick={() => setDeleteDocId(null)}
+              className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="group flex items-center gap-2 rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-rose-500/20 transition-all hover:bg-rose-500 active:scale-95"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span>Confirm Purge</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

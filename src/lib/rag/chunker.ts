@@ -24,8 +24,8 @@ export interface ChunkerOptions {
   overlap?: number
 }
 
-const DEFAULT_CHUNK_SIZE = 2000
-const DEFAULT_OVERLAP = 200
+const DEFAULT_CHUNK_SIZE = 1200
+const DEFAULT_OVERLAP = 150
 
 /**
  * Split page texts into overlapping chunks.

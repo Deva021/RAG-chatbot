@@ -75,4 +75,28 @@ export async function generateEmbeddings(
   return results
 }
 
+/**
+ * Generate embedding for a single question with timeout safety.
+ * Throws ERR_LOAD_TIMEOUT if model doesn't load in 15s.
+ */
+export async function embedQuestion(text: string): Promise<number[]> {
+  const timeoutMs = 60000 // Increased to 60s for slow connections/initial load
+  const timeoutPromise = new Promise<never>((_, reject) => 
+    setTimeout(() => reject(new Error('ERR_LOAD_TIMEOUT')), timeoutMs)
+  )
+
+  const workPromise = async () => {
+    try {
+      const embedder = await getEmbedder()
+      const output = await embedder(text, { pooling: 'mean', normalize: true })
+      return Array.from(output.data as Float32Array).slice(0, 384)
+    } catch (error: any) {
+       // Check for specific WASM errors if needed
+       throw error
+    }
+  }
+
+  return Promise.race([workPromise(), timeoutPromise])
+}
+
 export { MODEL_ID }
