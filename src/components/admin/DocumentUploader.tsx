@@ -76,9 +76,17 @@ export default function DocumentUploader({ onComplete }: { onComplete?: () => vo
           <Zap className="h-4 w-4 text-indigo-500 animate-pulse" />
           <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-900/40 dark:text-indigo-100/40">Nexus Ingestion Wizard</h3>
         </div>
-        {file && !isProcessing && !result && (
-          <button onClick={reset} className="text-[10px] font-black uppercase tracking-widest text-neutral-400 transition-colors hover:text-rose-500">Reset Buffer</button>
-        )}
+        <div className="flex items-center gap-4">
+          {file && !isProcessing && !result && (
+            <button onClick={reset} className="text-[10px] font-black uppercase tracking-widest text-neutral-400 transition-colors hover:text-rose-500">Reset Buffer</button>
+          )}
+          <button 
+            onClick={() => onComplete?.()} 
+            className="text-[10px] font-black uppercase tracking-widest text-neutral-400 transition-colors hover:text-indigo-600"
+          >
+            Close Wizard
+          </button>
+        </div>
       </div>
 
       <div className="p-10">
@@ -86,7 +94,7 @@ export default function DocumentUploader({ onComplete }: { onComplete?: () => vo
         {!isProcessing && !result && (
           <div className="space-y-8">
             <div
-              className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[2rem] border-2 border-dashed transition-all duration-500 px-6 py-16 ${
+              className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-4xl border-2 border-dashed transition-all duration-500 px-6 py-16 ${
                 file 
                 ? 'border-indigo-500 bg-indigo-50/40 dark:bg-indigo-900/10 shadow-[0_0_40px_-10px_rgba(79,70,229,0.2)]' 
                 : 'border-neutral-200 bg-neutral-50/50 hover:border-indigo-400 hover:bg-white/80 dark:border-neutral-800'
@@ -227,18 +235,18 @@ export default function DocumentUploader({ onComplete }: { onComplete?: () => vo
                 </p>
                 
                 <div className="mt-12 grid grid-cols-2 gap-8 w-full max-w-md">
-                  <div className="rounded-[1.5rem] bg-white/80 p-6 shadow-xl backdrop-blur-md dark:bg-neutral-900/80">
+                  <div className="rounded-3xl bg-white/80 p-6 shadow-xl backdrop-blur-md dark:bg-neutral-900/80">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-800/60">Vector Segments</p>
                     <p className="mt-1 text-3xl font-black text-neutral-900 dark:text-white">{result.chunkCount}</p>
                   </div>
-                  <div className="rounded-[1.5rem] bg-white/80 p-6 shadow-xl backdrop-blur-md dark:bg-neutral-900/80">
+                  <div className="rounded-3xl bg-white/80 p-6 shadow-xl backdrop-blur-md dark:bg-neutral-900/80">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-800/60">Page Sources</p>
                     <p className="mt-1 text-3xl font-black text-neutral-900 dark:text-white">{result.pageCount}</p>
                   </div>
                 </div>
               </div>
             </div>
-
+ 
             <button
               onClick={reset}
               className="flex h-16 w-full items-center justify-center gap-3 rounded-2xl border-2 border-indigo-100 bg-white px-8 font-black text-indigo-600 transition-all duration-300 hover:border-indigo-600 hover:bg-indigo-50 active:scale-95 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-indigo-500 dark:hover:bg-neutral-800"
