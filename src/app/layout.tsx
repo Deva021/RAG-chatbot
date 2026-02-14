@@ -6,7 +6,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI RAG Chatbot',
+  title: 'CSEC Nexus',
   description: 'Next.js + Supabase RAG Chatbot',
 }
 

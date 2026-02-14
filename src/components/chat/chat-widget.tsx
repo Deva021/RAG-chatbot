@@ -291,7 +291,7 @@ export default function ChatWidget({ user }: ChatWidgetProps) {
         <div className="flex h-[500px] w-[350px] flex-col rounded-xl border border-white/10 bg-black/90 shadow-2xl backdrop-blur-xl overflow-hidden transition-all sm:w-[400px]">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-4 py-3">
-            <h3 className="font-semibold text-sm text-white">CSEC AI Assistant</h3>
+            <h3 className="font-semibold text-sm text-white">CSEC Nexus</h3>
             <div className="flex items-center gap-2">
                 {user && (
                     <button
@@ -413,33 +413,46 @@ export default function ChatWidget({ user }: ChatWidgetProps) {
 }
 
 function CitationList({ citations }: { citations: CitationType[] }) {
+  // Deduplicate and group by document
+  const uniqueCitations = citations.reduce((acc, curr) => {
+    const existing = acc.find(c => c.document_title === curr.document_title)
+    if (existing) {
+        // If we have a new page for existing doc, append it to a custom property (we'll need to cast or just handle it purely in UI)
+        // For simplicity, we just keep the first one but we might want to track all pages.
+        // Let's create a display object.
+        if (curr.page && !existing.pages?.includes(curr.page)) {
+            existing.pages = [...(existing.pages || []), curr.page].sort((a,b) => a-b)
+        }
+        return acc
+    }
+    return [...acc, { ...curr, pages: curr.page ? [curr.page] : [] }]
+  }, [] as (CitationType & { pages?: number[] })[])
+
   const [expanded, setExpanded] = useState(false)
-  const visibleCitations = expanded ? citations : citations.slice(0, 3)
-  const hasMore = citations.length > 3
+  const visibleCitations = expanded ? uniqueCitations : uniqueCitations.slice(0, 3)
+  const hasMore = uniqueCitations.length > 3
 
   return (
-    <div className="ml-10 mt-2">
-        <div className="space-y-1">
+    <div className="mt-2.5 pl-2">
+        <div className="mb-1.5 flex items-center gap-2 text-[10px] uppercase tracking-wider text-neutral-500 font-semibold">
+            <span className="text-[9px]">Sources</span>
+            <div className="h-px flex-1 bg-white/5" />
+        </div>
+        <div className="flex flex-wrap gap-1.5">
             {visibleCitations.map((citation, idx) => (
-                <Citation key={idx} source={citation} />
+                <Citation 
+                    key={idx} 
+                    source={citation} 
+                    pages={citation.pages}
+                />
             ))}
         </div>
         {hasMore && (
             <button
                 onClick={() => setExpanded(!expanded)}
-                className="mt-1 flex items-center gap-1 text-[10px] text-gray-500 hover:text-white transition-colors uppercase tracking-wider font-semibold"
+                className="mt-2 text-[10px] text-neutral-500 hover:text-white transition-colors flex items-center gap-1"
             >
-                {expanded ? (
-                    <>
-                        <ChevronUp className="h-3 w-3" />
-                        Show Less
-                    </>
-                ) : (
-                    <>
-                        <ChevronDown className="h-3 w-3" />
-                        Show {citations.length - 3} More
-                    </>
-                )}
+                {expanded ? 'Show Less' : `+ ${uniqueCitations.length - 3} more`}
             </button>
         )}
     </div>
